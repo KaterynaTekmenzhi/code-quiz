@@ -11,7 +11,7 @@
 <body>
     <header>
         <div id="navbar">
-            <button id="highScores" class="button button1">High Scores</button>
+            <button id="highScores" class="button">High Scores</button>
             <label id="time">Time:</label>
         </div>
     </header>
@@ -23,9 +23,34 @@
                     <h1>Welcome to Code Quiz!</h1>
                     <p>This is a quiz game that tests your knowledge of HTML and CSS. You will be given a series of questions to answer. You will have a limited amount of time to answer each question. If you answer a question incorrectly, you will lose a point. If you answer a question correctly, you will gain a point. The game ends when you run out of time or when you answer all of the questions correctly. You will be able to see your score at the end of the game.</p>
                     <p>Good luck!</p>
-                    <button id="startGame" class="button button2">Start Game</button>
+                    <button id="startGame" class="button">Start Game</button>
                 </div>
             </section>
+            <section id="gameSection" class="gameModal">
+                <div id="gameLive">
+                    <h1 id="questionText"></h1>
+                        <div id="choices"></div>
+                        <div id="answer"></div>
+                </div>
+            </section>
+            <section id="gameDead" class="gameModal">
+                <div>
+                    <h1>Game Over</h1>
+                    <h3 id="showScore"></h3>
+                    <div id="saveScore">
+                        <label for="name">Enter your name:</label>
+                        <input type="text" id="name" placeholder="name">
+                        <button id="saveData">Save Score</button>
+                    </div>
+                </div>
+            </section>
+            <section id="highScores" class="gameModal">
+                <div id="scoresList"></div>
+                <div id="buttonsSelection">
+                    <button id="backToGame">Back</button>
+                    <button id="restartGame">Restart Game</button>
+                    <button id="resetScores">Reset Scores</button>
+                </div>
         </section>
     </main>
 </body>
