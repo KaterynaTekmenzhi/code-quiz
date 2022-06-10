@@ -1,9 +1,15 @@
 var timer;
 var gameTime = 60;
+var questionIndex = 0;
+var penalty = 5;
+var score = 0;
 var timeField = document.getElementById("time");
 var timeFieldPrefix = 'Time remaining: ';
+var answerOList = document.createElement("ol");
+
 
 // get elements 
+var mainSection = document.getElementById("mainSection");
 var welcomeModal = document.getElementById("welcomeModal");
 var gameSection = document.getElementById("gameSection");
 var gameDead = document.getElementById("gameDead");
@@ -20,6 +26,12 @@ var resetScoresBtn = document.getElementById("resetScores");
 var questionText = document.getElementById("questionText");
 var questionChoices = document.getElementById("choices");
 var userAnswer = document.getElementById("answer");
+
+var init = function() {
+    gameScores.hidden = true;
+    mainSection.hidden = true;
+    timeField.innerHTML = timeFieldPrefix + gameTime;
+}
 
 var startButtonClick = function() {
     welcomeModal.hidden = true;
@@ -41,31 +53,65 @@ var backButtonClick = function() {
 var timerBegin = function() {
     gameTime--;
     timeField.innerHTML = timeFieldPrefix + gameTime;
+    if (gameTime <= 0) {
+        clearInterval(timer);
+        gameOver();
+    }
 }
 
 var handleChoiceClick = function (event) {
-    console.log(event.target);
     if ( event.target.tagName === 'BUTTON') {
-        console.log('You hit a button!!!');
+        if (event.target.innerHTML === questions[questionIndex].answer) {
+            userAnswer.innerHTML = "Correct!";
+            score++;
+        } else {
+            userAnswer.innerHTML = "Wrong!";
+            if ((gameTime - penalty) > 0) {
+                gameTime = 0;
+                timeField.innerHTML = timeFieldPrefix + gameTime;
+                endGame();
+            }
+        }
+        if (questionIndex >= questions.length) {
+            clearInterval(timer);
+            endGame();
+        }
     }
+    questionIndex++;
+    askQuestion(questions[questionIndex]);
 }
 
 var askQuestion = function(question) {
+    answerOList.innerHTML = "";
     questionText.innerHTML = question.title;
     console.log(question.choices);
     for (var i = 0; i < question.choices.length; i++) {
+        var answerItem = document.createElement("li");
         var choice = document.createElement("button");
         choice.innerHTML = question.choices[i];
-        questionChoices.append(choice);
+        answerItem.append(choice);
+        answerOList.append(answerItem);
     }
+    questionChoices.append(answerOList);
     questionChoices.addEventListener("click", handleChoiceClick);
 } 
 
 
 var startGame = function() {
+    questionIndex = 0;
+    score = 0;
     timer = setInterval(timerBegin, 1000);
-    var questionRules = 0;
-    askQuestion(questions[questionRules]);
+    askQuestion(questions[0]);
+}
+
+var endGame = function() {
+    gameSection.hidden = true;
+    gameDead.hidden = false;
+    console.log(gameDead);
 }
 
 scoresButton.addEventListener("click", scoresClick);
+backButton.addEventListener("click", backButtonClick);
+startButton.addEventListener("click", startButtonClick);
+
+init();
