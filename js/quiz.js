@@ -1,5 +1,6 @@
 var timer;
-var gameTime = 60;
+var GAMETIME = 60;
+var gameTime = GAMETIME;
 var questionIndex = 0;
 var penalty = 5;
 var score = 0;
@@ -15,6 +16,7 @@ var gameSection = document.getElementById("gameSection");
 var gameDead = document.getElementById("gameDead");
 var gameScores = document.getElementById("gameScores");
 var scoresList = document.getElementById("scoresList");
+var showScores = document.getElementById("showScores");
 
 var scoresButton = document.getElementById("highScores");
 var startButton = document.getElementById("startGame");
@@ -29,17 +31,21 @@ var userAnswer = document.getElementById("answer");
 
 var init = function() {
     gameScores.hidden = true;
-    mainSection.hidden = true;
+    mainSection.hidden = false;
     timeField.innerHTML = timeFieldPrefix + gameTime;
+    highScores = JSON.parse(localStorage.getItem("highScores"));
 }
 
 var startButtonClick = function() {
+    gameTime = GAMETIME;
+    scoresButton.disabled = true;
     welcomeModal.hidden = true;
     gameSection.hidden = false;
     startGame();
 }
 
 var scoresClick = function() {
+
     welcomeModal.hidden = true;
     gameSection.hidden = true;
     gameDead.hidden = false;
@@ -59,6 +65,14 @@ var timerBegin = function() {
     }
 }
 
+var scoresClicked = function() {
+    if (confirm("Are you sure you want to reset the scores?")) {
+        highScores = [];
+        localStorage.setItem("highScores", JSON.stringify(highScores));
+        scoresClick();
+    }
+}
+
 var handleChoiceClick = function (event) {
     if ( event.target.tagName === 'BUTTON') {
         if (event.target.innerHTML === questions[questionIndex].answer) {
@@ -72,13 +86,14 @@ var handleChoiceClick = function (event) {
                 endGame();
             }
         }
-        if (questionIndex >= questions.length) {
+        if (questionIndex >= (questions.length - 1)) {
             clearInterval(timer);
             endGame();
+        } else {
+            questionIndex++;
+            askQuestion(questions[questionIndex]);
         }
     }
-    questionIndex++;
-    askQuestion(questions[questionIndex]);
 }
 
 var askQuestion = function(question) {
@@ -107,6 +122,7 @@ var startGame = function() {
 var endGame = function() {
     gameSection.hidden = true;
     gameDead.hidden = false;
+    showScores.textContent = "Your score is " + score;
     console.log(gameDead);
 }
 
